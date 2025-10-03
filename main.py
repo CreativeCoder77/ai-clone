@@ -1,18 +1,3 @@
-#!/usr/bin/env python3
-"""
-personal_gemini_chat_formatted_fixed.py - Enhanced with Colors & Loading Animations
-
-Features:
-- Beautiful colored terminal interface
-- Loading animations for API calls
-- Signup/Login with CSV file selector
-- Password hashing with PBKDF2
-- AI analysis of chat style
-- Persistent chat histories
-- Memory feature for learning facts with SNo tracking
-- Date/time context awareness
-- Memory prioritization over chat history
-"""
 
 import os
 import json
@@ -40,6 +25,7 @@ except ImportError:
     from colorama import init, Fore, Back, Style
     init(autoreset=True)
     COLORS_ENABLED = True
+
 
 owner_instructions = """
 owner is the person whose talking style you are learning and mimicking.
@@ -1232,4 +1218,5 @@ def main():
         chat_loop(username)
 
 if __name__ == "__main__":
+
     main()

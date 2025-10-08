@@ -260,7 +260,7 @@ def save_chat_history(username, history):
 
 # ============ Gemini Client ============
 def get_genai_client():
-    api_key = "AIzaSyAlv3bdC2r3dAW7dL_5mZumkElQVXmN2Yk"
+    api_key = "YOUR_GEMINI_API_KEY"
     if not api_key:
         print_error("Set GEMINI_API_KEY environment variable.")
         raise SystemExit(1)
@@ -1233,4 +1233,5 @@ def main():
         chat_loop(username)
 
 if __name__ == "__main__":
+
     main()

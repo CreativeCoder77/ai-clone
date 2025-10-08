@@ -26,7 +26,6 @@ except ImportError:
     init(autoreset=True)
     COLORS_ENABLED = True
 
-
 owner_instructions = """
 owner is the person whose talking style you are learning and mimicking.
 user is the person chatting with the owner.
@@ -92,7 +91,7 @@ When saving to memory, always restate the fact clearly and prepend it with:
 
 
 
-# Color scheme
+# Color scheme for the command line interface
 class Colors:
     PRIMARY = Fore.CYAN
     SUCCESS = Fore.GREEN
@@ -123,6 +122,7 @@ class LoadingSpinner:
         self.thread = None
         
     def spin(self):
+        # Loaders animation will appear in the following sequence
         spinners = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
         idx = 0
         while self.running:
@@ -147,7 +147,7 @@ class LoadingSpinner:
 
 
 def parse_time_string(time_str: str):
-    """Parse human time strings like '1h', '30m', '2d' into timedelta."""
+   # Parse human time strings like '1h', '30m', '2d' into timedelta.
     match = re.match(r"(\d+)([smhd])", time_str.strip().lower())
     if not match:
         return None
@@ -165,7 +165,7 @@ def parse_time_string(time_str: str):
 
 
 def clean_expired_memories(username):
-    """Remove expired memories for the user."""
+    # Remove expired memories for the user.
     users = load_users()
     rec = users.get(username, {})
     learning_facts = rec.get("learning", [])
@@ -491,13 +491,48 @@ def migrate_existing_memories_add_sno(username):
     return True
 
 
+# ============ Login ============
+def login():
+    """
+    Simple login by username only (no password).
+    Returns the username on success, or None if the user does not exist.
+    """
+
+
+    for attempt in range(3):
+        print_section_header(f"USER LOGIN ({3-attempt} left)")
+        users = load_users()
+        username = input(f"{Colors.PRIMARY}Enter username: {Colors.RESET}").strip()
+
+        if not username:
+            print_error("Username cannot be empty.")
+            continue
+
+        if username not in users:
+            print_error("User not found. Please try again.")
+            continue
+
+        print_success(f"Welcome back, {username}!")
+        return username
+
+    users = load_users()
+
+    if not username:
+        return None
+
+    if username not in users:
+        return None
+
+    print_success(f"Welcome back, {username}!")
+    return username
+
+
 # ============ Signup ============
 
 def signup():
     """
-    New user signup WITHOUT password.
     User provides username, selects an Instagram CSV (required),
-    and the system generates an analysis from the CSV.
+    and the system generates using ai an analysis from the CSV.
     Returns the created username on success, or None on failure.
     """
     print_section_header("NEW USER SIGNUP (No password required)")
@@ -672,27 +707,7 @@ def delete_account():
     print_success(f"Account '{username}' has been permanently deleted.")
     return True
 
-# ============ Login ============
-def login():
-    """
-    Simple login by username only (no password).
-    Returns the username on success, or None if the user does not exist.
-    """
-    print_section_header("USER LOGIN (No password required)")
 
-    users = load_users()
-    username = input(f"{Colors.PRIMARY}Enter username: {Colors.RESET}").strip()
-
-    if not username:
-        print_error("Username cannot be empty.")
-        return None
-
-    if username not in users:
-        print_error("User not found.")
-        return None
-
-    print_success(f"Welcome back, {username}!")
-    return username
 
 # ============ Input Helper ============
 def multiline_input(prompt=""):
@@ -1200,11 +1215,11 @@ def main():
     choice = input(f"{Colors.PRIMARY}Enter your choice (1, 2, or 3): {Colors.RESET}").strip()
     
     username = None
-    if choice == "1":
+    if choice in ["1", "signup"]:
         username = signup()
-    elif choice == "2":
+    elif choice  in ["2", "login"]:
         username = login()
-    elif choice == "3":
+    elif choice in ["3", "delete", "delete account"]:
         if delete_account():
             print_info("\nReturning to main menu...\n")
             time.sleep(2)
@@ -1218,5 +1233,4 @@ def main():
         chat_loop(username)
 
 if __name__ == "__main__":
-
     main()
